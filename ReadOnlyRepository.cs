@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Linq;
 using Dapper;
+using Data.Predicates;
 
 namespace Necessity.UnitOfWork
 {
@@ -18,13 +19,13 @@ namespace Necessity.UnitOfWork
         public IDbConnection Connection => Transaction.Connection;
         public IReadOnlyQueryBuilder<TEntity, TKey> QueryBuilder { get; }
 
-        public virtual async Task<TEntity> Find(TKey key)
+        public virtual async Task<TEntity> Get(TKey key)
         {
             var queryParams = new Dictionary<string, object>();
 
             return (await Connection
                 .QueryAsync<TEntity>(
-                    QueryBuilder.Find(
+                    QueryBuilder.Get(
                         key,
                         queryParams),
                     queryParams,
@@ -39,6 +40,18 @@ namespace Necessity.UnitOfWork
             return (await Connection
                 .QueryAsync<TEntity>(
                     QueryBuilder.GetAll(queryParams),
+                    queryParams,
+                    Transaction))
+                .ToList();
+        }
+
+        public virtual async Task<List<TEntity>> Find(Predicate predicate)
+        {
+            var queryParams = new Dictionary<string, object>();
+
+            return (await Connection
+                .QueryAsync<TEntity>(
+                    QueryBuilder.Find(predicate, queryParams),
                     queryParams,
                     Transaction))
                 .ToList();

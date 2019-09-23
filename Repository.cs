@@ -36,6 +36,17 @@ namespace Necessity.UnitOfWork
                     Transaction);
         }
 
+        public virtual Task Upsert(TEntity entity, OnConflict onConflict)
+        {
+            var queryParams = new Dictionary<string, object>();
+
+            return Connection
+                .ExecuteAsync(
+                    QueryBuilder.Upsert(entity, onConflict, queryParams),
+                    queryParams,
+                    Transaction);
+        }
+
         public virtual Task Delete(TKey key)
         {
             var queryParams = new Dictionary<string, object>();
