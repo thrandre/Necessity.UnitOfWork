@@ -1,4 +1,4 @@
-namespace Data.Predicates
+namespace Necessity.UnitOfWork.Predicates
 {
     public interface IPredicateVisitor<T>
     {

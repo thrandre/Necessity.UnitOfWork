@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Data.Predicates;
+using Necessity.UnitOfWork.Predicates;
 
 namespace Necessity.UnitOfWork
 {

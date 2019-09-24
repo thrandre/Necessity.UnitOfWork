@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Data.Predicates
+namespace Necessity.UnitOfWork.Predicates
 {
     public abstract class Predicate
     {

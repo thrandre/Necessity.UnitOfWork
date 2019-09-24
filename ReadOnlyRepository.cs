@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Linq;
 using Dapper;
-using Data.Predicates;
+using Necessity.UnitOfWork.Predicates;
 
 namespace Necessity.UnitOfWork
 {

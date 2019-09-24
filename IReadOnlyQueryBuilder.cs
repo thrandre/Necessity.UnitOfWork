@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Data.Predicates;
+using Necessity.UnitOfWork.Predicates;
 
 namespace Necessity.UnitOfWork
 {
