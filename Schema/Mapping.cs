@@ -17,7 +17,7 @@ namespace Necessity.UnitOfWork.Schema
         public NonStandardDbType? NonStandardDbType { get; }
         public string CustomSqlExpression { get; set; }
 
-        public string QualifiedName(ISchema schema) => !ColumnName.Contains(".")
+        public string QualifiedColumnName(ISchema schema) => !ColumnName.Contains(".")
             ? $"{schema.TableAlias}.{ColumnName}"
             : ColumnName;
     }
