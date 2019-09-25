@@ -8,12 +8,12 @@ using System;
 
 namespace Necessity.UnitOfWork
 {
-    public class ReadOnlyRepository<TEntity, TKey> : IReadOnlyRepository<TEntity, TKey>
+    public abstract class ReadOnlyRepository<TEntity, TKey> : IReadOnlyRepository<TEntity, TKey>
     {
         public ReadOnlyRepository(
             IDbTransaction transaction,
             IReadOnlyQueryBuilder<TEntity, TKey> queryBuilder,
-            Action<object> logger = null)
+            Action<object> logger)
         {
             Transaction = transaction;
             QueryBuilder = queryBuilder;

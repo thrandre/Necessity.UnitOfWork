@@ -6,14 +6,16 @@ namespace Necessity.UnitOfWork
 {
     public class DbUnitOfWork : IUnitOfWork
     {
-        public DbUnitOfWork(IDbConnection connection)
+        public DbUnitOfWork(IDbConnection connection, Action<object> logger)
         {
             Connection = connection;
+            Logger = logger;
             Begin();
         }
 
         public Guid Id { get; } = Guid.NewGuid();
         public IDbConnection Connection { get; }
+        public Action<object> Logger { get; }
         public IDbTransaction Transaction { get; private set; }
 
         protected ConcurrentDictionary<Type, object> Instances = new ConcurrentDictionary<Type, object>();
@@ -64,7 +66,7 @@ namespace Necessity.UnitOfWork
         {
             return (TRepository)Instances.GetOrAdd(
                 typeof(TRepository),
-                _ => (TRepository)Activator.CreateInstance(typeof(TRepository), Transaction));
+                _ => (TRepository)Activator.CreateInstance(typeof(TRepository), Transaction, Logger));
         }
 
         ~DbUnitOfWork()

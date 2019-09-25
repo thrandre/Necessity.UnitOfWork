@@ -6,12 +6,12 @@ using System;
 
 namespace Necessity.UnitOfWork
 {
-    public class Repository<TEntity, TKey> : ReadOnlyRepository<TEntity, TKey>, IRepository<TEntity, TKey> where TEntity : class, new()
+    public abstract class Repository<TEntity, TKey> : ReadOnlyRepository<TEntity, TKey>, IRepository<TEntity, TKey> where TEntity : class, new()
     {
         public Repository(
             IDbTransaction transaction,
             IQueryBuilder<TEntity, TKey> queryBuilder,
-            Action<object> logger = null)
+            Action<object> logger)
             : base(transaction, queryBuilder, logger)
         {
         }
