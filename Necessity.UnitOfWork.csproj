@@ -6,7 +6,7 @@
     <RootNamespace>Necessity.UnitOfWork</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>thrandre.Necessity.UnitOfWork</PackageId>
-    <Version>3.0.1</Version>
+    <Version>3.1.0</Version>
     <Authors>Necessity</Authors>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
