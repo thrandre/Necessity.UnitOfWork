@@ -15,5 +15,7 @@ namespace Necessity.UnitOfWork.Schema
         public string ColumnName { get; }
         public string PropertyName { get; }
         public NonStandardDbType? NonStandardDbType { get; }
+
+        public string CustomSqlExpression { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Data;
 
 namespace Necessity.UnitOfWork
@@ -14,6 +15,8 @@ namespace Necessity.UnitOfWork
         public Guid Id { get; } = Guid.NewGuid();
         public IDbConnection Connection { get; }
         public IDbTransaction Transaction { get; private set; }
+
+        protected ConcurrentDictionary<Type, object> Instances = new ConcurrentDictionary<Type, object>();
 
         public IDbTransaction Begin()
         {
@@ -55,6 +58,13 @@ namespace Necessity.UnitOfWork
             }
 
             Connection.Dispose();
+        }
+
+        protected TRepository Repository<TRepository>()
+        {
+            return (TRepository)Instances.GetOrAdd(
+                typeof(TRepository),
+                _ => (TRepository)Activator.CreateInstance(typeof(TRepository), Transaction));
         }
 
         ~DbUnitOfWork()
