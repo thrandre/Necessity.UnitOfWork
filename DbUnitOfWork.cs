@@ -41,13 +41,11 @@ namespace Necessity.UnitOfWork
         public void Commit()
         {
             Transaction?.Commit();
-            Dispose();
         }
 
         public void Rollback()
         {
             Transaction?.Rollback();
-            Dispose();
         }
 
         protected TRepository Repository<TRepository>()
