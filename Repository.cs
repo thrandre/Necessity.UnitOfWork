@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Data;
 using Dapper;
-using System;
+using Microsoft.Extensions.Logging;
 
 namespace Necessity.UnitOfWork
 {
@@ -11,7 +11,7 @@ namespace Necessity.UnitOfWork
         public Repository(
             IDbTransaction transaction,
             IQueryBuilder<TEntity, TKey> queryBuilder,
-            Action<object> logger)
+            ILogger logger)
             : base(transaction, queryBuilder, logger)
         {
         }
@@ -23,7 +23,7 @@ namespace Necessity.UnitOfWork
             var queryParams = new Dictionary<string, object>();
             var query = QueryBuilder.Create(entity, queryParams);
 
-            Logger?.Invoke(new { Method = nameof(Create), Query = query, Params = queryParams });
+            Logger.LogInformation("Executing query: {@Query}", new { Method = nameof(Create), Query = query, Params = queryParams });
 
             return Connection
                 .ExecuteAsync(
@@ -37,7 +37,7 @@ namespace Necessity.UnitOfWork
             var queryParams = new Dictionary<string, object>();
             var query = QueryBuilder.Update(entity, queryParams);
 
-            Logger?.Invoke(new { Method = nameof(Update), Query = query, Params = queryParams });
+            Logger.LogInformation("Executing query: {@Query}", new { Method = nameof(Update), Query = query, Params = queryParams });
 
             return Connection
                 .ExecuteAsync(
@@ -51,7 +51,7 @@ namespace Necessity.UnitOfWork
             var queryParams = new Dictionary<string, object>();
             var query = QueryBuilder.Upsert(entity, onConflict, queryParams);
 
-            Logger?.Invoke(new { Method = nameof(Upsert), Query = query, Params = queryParams });
+            Logger.LogInformation("Executing query: {@Query}", new { Method = nameof(Upsert), Query = query, Params = queryParams });
 
             return Connection
                 .ExecuteAsync(
@@ -65,7 +65,7 @@ namespace Necessity.UnitOfWork
             var queryParams = new Dictionary<string, object>();
             var query = QueryBuilder.Delete(key, queryParams);
 
-            Logger?.Invoke(new { Method = nameof(Delete), Query = query, Params = queryParams });
+            Logger.LogInformation("Executing query: {@Query}", new { Method = nameof(Delete), Query = query, Params = queryParams });
 
             return Connection
                 .ExecuteAsync(
