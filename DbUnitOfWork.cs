@@ -7,6 +7,8 @@ namespace Necessity.UnitOfWork
 {
     public class DbUnitOfWork : IUnitOfWork
     {
+        private bool _disposed;
+
         public DbUnitOfWork(IDbConnection connection, ILogger logger)
         {
             Connection = connection;
@@ -25,7 +27,6 @@ namespace Necessity.UnitOfWork
         {
             if (Connection.State != ConnectionState.Open)
             {
-                Connection.Close();
                 Connection.Open();
             }
 
@@ -49,20 +50,6 @@ namespace Necessity.UnitOfWork
             Dispose();
         }
 
-        public void Dispose()
-        {
-            if (Transaction != null)
-            {
-                Transaction.Connection?.Dispose();
-                Transaction.Dispose();
-                Transaction = null;
-
-                return;
-            }
-
-            Connection.Dispose();
-        }
-
         protected TRepository Repository<TRepository>()
         {
             return (TRepository)Instances.GetOrAdd(
@@ -70,9 +57,39 @@ namespace Necessity.UnitOfWork
                 _ => (TRepository)Activator.CreateInstance(typeof(TRepository), Transaction, Logger));
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                if (Transaction != null)
+                {
+                    Transaction.Connection?.Dispose();
+                    Transaction.Dispose();
+                    Transaction = null;
+                }
+                else
+                {
+                    Connection.Dispose();
+                }
+            }
+
+            _disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         ~DbUnitOfWork()
         {
-            Dispose();
+            Dispose(false);
         }
     }
 }
