@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Data;
+using Microsoft.Extensions.Logging;
 
 namespace Necessity.UnitOfWork
 {
     public class DbUnitOfWork : IUnitOfWork
     {
-        public DbUnitOfWork(IDbConnection connection, Action<object> logger)
+        public DbUnitOfWork(IDbConnection connection, ILogger logger)
         {
             Connection = connection;
             Logger = logger;
@@ -15,7 +16,7 @@ namespace Necessity.UnitOfWork
 
         public Guid Id { get; } = Guid.NewGuid();
         public IDbConnection Connection { get; }
-        public Action<object> Logger { get; }
+        public ILogger Logger { get; }
         public IDbTransaction Transaction { get; private set; }
 
         protected ConcurrentDictionary<Type, object> Instances = new ConcurrentDictionary<Type, object>();
