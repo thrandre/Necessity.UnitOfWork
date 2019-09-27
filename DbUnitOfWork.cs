@@ -13,39 +13,38 @@ namespace Necessity.UnitOfWork
         {
             Connection = connection;
             Logger = logger;
-            Begin();
-        }
 
-        public Guid Id { get; } = Guid.NewGuid();
-        public IDbConnection Connection { get; }
-        public ILogger Logger { get; }
-        public IDbTransaction Transaction { get; private set; }
-
-        protected ConcurrentDictionary<Type, object> Instances = new ConcurrentDictionary<Type, object>();
-
-        public IDbTransaction Begin()
-        {
             if (Connection.State != ConnectionState.Open)
             {
                 Connection.Open();
             }
 
-            if (Transaction == null)
-            {
-                Transaction = Connection.BeginTransaction();
-            }
-
-            return Transaction;
+            Transaction = Connection.BeginTransaction();
         }
+
+        public Guid Id { get; } = Guid.NewGuid();
+        public IDbConnection Connection { get; private set; }
+        public IDbTransaction Transaction { get; private set; }
+        public ILogger Logger { get; }
+
+        protected ConcurrentDictionary<Type, object> Instances = new ConcurrentDictionary<Type, object>();
 
         public void Commit()
         {
-            Transaction?.Commit();
-        }
-
-        public void Rollback()
-        {
-            Transaction?.Rollback();
+            try
+            {
+                Transaction.Commit();
+            }
+            catch
+            {
+                Transaction.Rollback();
+                throw;
+            }
+            finally
+            {
+                Transaction.Dispose();
+                Transaction = Connection.BeginTransaction();
+            }
         }
 
         protected TRepository Repository<TRepository>()
@@ -66,13 +65,14 @@ namespace Necessity.UnitOfWork
             {
                 if (Transaction != null)
                 {
-                    Transaction.Connection?.Dispose();
                     Transaction.Dispose();
                     Transaction = null;
                 }
-                else
+
+                if (Connection != null)
                 {
                     Connection.Dispose();
+                    Connection = null;
                 }
             }
 

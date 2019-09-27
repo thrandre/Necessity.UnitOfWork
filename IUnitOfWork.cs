@@ -8,8 +8,6 @@ namespace Necessity.UnitOfWork
         Guid Id { get; }
         IDbConnection Connection { get; }
         IDbTransaction Transaction { get; }
-        IDbTransaction Begin();
         void Commit();
-        void Rollback();
     }
 }
