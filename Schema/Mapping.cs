@@ -26,8 +26,6 @@ namespace Necessity.UnitOfWork.Schema
                 : ColumnName;
 
         public string QualifiedColumnNameForInsert(ISchema schema) =>
-            OnInsert == null && !ColumnName.Contains(".")
-                ? $"{schema.TableAlias}.{ColumnName}"
-                : ColumnName;
+            ColumnName;
     }
 }
