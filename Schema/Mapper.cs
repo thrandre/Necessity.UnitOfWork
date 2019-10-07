@@ -1,3 +1,5 @@
+using System;
+
 namespace Necessity.UnitOfWork.Schema
 {
     public class Mapper
@@ -5,7 +7,8 @@ namespace Necessity.UnitOfWork.Schema
         private readonly string _propertyName;
         private string _columnName;
         private NonStandardDbType? _dbType;
-        private string _sqlExpression;
+        private Func<object, string> _onSelectFactory;
+        private Func<object, string> _onInsertFactory;
 
         public Mapper(string propertyName)
         {
@@ -24,9 +27,15 @@ namespace Necessity.UnitOfWork.Schema
             return this;
         }
 
-        public Mapper UsingSqlExpression(string sqlExpression)
+        public Mapper OnSelect(Func<object, string> sqlSelectExpressionFactory)
         {
-            _sqlExpression = sqlExpression;
+            _onSelectFactory = sqlSelectExpressionFactory;
+            return this;
+        }
+
+        public Mapper OnInsert(Func<object, string> sqlInsertExpressionFactory)
+        {
+            _onInsertFactory = sqlInsertExpressionFactory;
             return this;
         }
 
@@ -34,7 +43,8 @@ namespace Necessity.UnitOfWork.Schema
         {
             return new Mapping(_propertyName, _columnName, _dbType)
             {
-                CustomSqlExpression = _sqlExpression
+                OnSelect = _onSelectFactory,
+                OnInsert = _onInsertFactory
             };
         }
 
